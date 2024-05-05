@@ -1,12 +1,14 @@
-import { FC } from 'react';
-import { View, Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native'
+import React from 'react'
 
-const Button: FC<{}> = () => {
+const Button = () => {
   return (
     <View>
-      <Text>Button</Text>
+      <Text>index</Text>
     </View>
-  );
-};
+  )
+}
 
-export default Button;
+export default Button
+
+const styles = StyleSheet.create({})
