@@ -6,6 +6,7 @@
     "paths": {
       "components/*": ["components/*"],
       "constants/*": ["constants/*"],
+      "services/*": ["services/*"],
       "hooks/*": ["hooks/*"],
       "screens/*": ["screens/*"],
       "utils/*": ["utils/*"],
