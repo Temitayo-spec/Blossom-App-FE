@@ -4,9 +4,9 @@ import SafeAreaWrapper from '@/components/shared/safe-area-wrapper';
 import { useNavigation } from '@react-navigation/native';
 import { AuthScreenNavigationType } from '@/navigation/types';
 import { Pressable, TextInput } from 'react-native';
-import Input, { UserProps } from '@/components/shared/input';
+import Input from '@/components/shared/input';
 import Button from '@/components/shared/button';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 import axiosInstance from '@/services/config';
 
@@ -16,17 +16,11 @@ const SignUp = () => {
   const navigateToSignInScreen = () => {
     navigation.navigate('Login');
   };
-  const [values, setValues] = useState<UserProps>({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
 
   const [loading, setLoading] = useState(false);
 
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<IUser>({
@@ -40,13 +34,14 @@ const SignUp = () => {
     setLoading(true);
     try {
       const { email, password, name } = data;
+      console.log(email, password, name);
 
       if ((!email && !email.includes('@')) || !name || !password) {
         return;
       }
 
       const res = await axiosInstance.post('/users/create', {
-        email,
+        email: email.toLowerCase(),
         name,
         password,
       });
@@ -87,35 +82,59 @@ const SignUp = () => {
             gap: theme.spacing[8],
           }}
         >
-          <Input
-            label="Name"
-            register={register}
-            tag="name"
-            values={values}
-            setValues={setValues}
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="Name"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                placeholder="Name"
+                error={errors.name}
+              />
+            )}
+            name="name"
+          />
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="E-mail"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                placeholder="Email"
+                error={errors.email}
+              />
+            )}
+            name="email"
+          />
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="Password"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                placeholder="Password"
+                error={errors.name}
+                secureTextEntry
+              />
+            )}
+            name="password"
           />
 
-          <Input
-            label="E-mail"
-            register={register}
-            tag="email"
-            values={values}
-            setValues={setValues}
-          />
-          <Input
-            label="Password"
-            register={register}
-            tag="password"
-            values={values}
-            setValues={setValues}
-          />
-          <Input
-            label="Confirm Password"
-            register={register}
-            tag="confirmPassword"
-            values={values}
-            setValues={setValues}
-          />
           <Pressable onPress={navigateToSignInScreen}>
             <Text
               variant="textBase"
@@ -134,7 +153,7 @@ const SignUp = () => {
               label="Register"
               disabled={false}
               uppercase={true}
-              onPress={() => handleSubmit(onSubmit(values as UserProps) as any)}
+              onPress={handleSubmit(onSubmit)}
               loading={loading}
             />
           </Box>

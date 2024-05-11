@@ -1,5 +1,7 @@
 import theme, { Box, Text } from '@/utils/theme';
-import { TextInput, TextInputProps } from 'react-native';
+import { FieldError } from 'react-hook-form';
+import { StyleSheet, TextInput, TextInputProps } from 'react-native';
+
 
 export interface UserProps extends IUser {
   confirmPassword?: string;
@@ -7,54 +9,33 @@ export interface UserProps extends IUser {
 
 type InputProps = {
   label: string;
-  error?: undefined;
-  values: UserProps;
-  setValues: React.Dispatch<React.SetStateAction<UserProps>>;
-  register: any;
-  tag: string;
+  error?: FieldError | undefined;
 } & TextInputProps;
 
-const Input = ({
-  label,
-  error,
-  values,
-  setValues,
-  register,
-  tag,
-}: InputProps) => {
+const Input = ({ label, error, ...props }: InputProps) => {
   return (
-    <Box
-      style={{
-        gap: 14,
-      }}
-    >
-      <Text
-        variant="textXs"
-        fontFamily="Nunito_700Bold"
-        textTransform="uppercase"
-      >
+    <Box flexDirection="column">
+      <Text variant="textXs" textTransform="uppercase" mb="3.5">
         {label}
       </Text>
       <TextInput
         style={{
-          height: 58,
-          borderRadius: theme.borderRadii['rounded-7xl'],
-          borderWidth: 1,
-          borderColor: 'rgba(60, 60, 67, 0.60)',
-          backgroundColor: '#FEFDFF',
           padding: 16,
+          borderWidth: 1,
+          borderColor: error ? theme.colors.rose500 : theme.colors.grey,
+          borderRadius: theme.borderRadii['rounded-7xl'],
         }}
-        onChangeText={(newText) =>
-          setValues({
-            ...values,
-            [tag]: newText,
-          })
-        }
-        defaultValue={values[tag as keyof IUser]}
-        {...register(tag)}
+        {...props}
       />
+      {error && (
+        <Text mt="3.5" variant="textSm" color="rose500">
+          {label} is required
+        </Text>
+      )}
     </Box>
   );
 };
 
 export default Input;
+
+const styles = StyleSheet.create({});

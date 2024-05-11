@@ -6,7 +6,7 @@ import SafeAreaWrapper from '@/components/shared/safe-area-wrapper';
 import Input from '@/components/shared/input';
 import Button from '@/components/shared/button';
 import { Pressable } from 'react-native';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import axiosInstance, {
   BLOSSOM_TOKEN_NAME,
   saveToken,
@@ -23,25 +23,20 @@ const Login = () => {
     navigation.navigate('SignUp');
   };
 
-  const [values, setValues] = useState({
-    email: '',
-    password: '',
-  });
-
   const [loading, setLoading] = useState(false);
 
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
-  } = useForm<IUser>({
+  } = useForm<Omit<IUser, 'name'>>({
     defaultValues: {
       email: '',
       password: '',
     },
   });
 
-  const onSubmit = async (data: IUser) => {
+  const onSubmit = async (data: Omit<IUser, 'name'>) => {
     setLoading(true);
     try {
       const { email, password } = data;
@@ -51,19 +46,21 @@ const Login = () => {
       }
 
       const res = await axiosInstance.post('/users/login', {
-        email,
+        email: email.toLowerCase(),
         password,
       });
 
       const userResp = res.data;
 
-      const token = userResp.token;
+      const _token = userResp.token;
       console.log(userResp);
 
       const _user = userResp.user;
 
       if (userResp.success) {
-        saveToken(BLOSSOM_TOKEN_NAME, token);
+        saveToken(BLOSSOM_TOKEN_NAME, _token);
+        axiosInstance.defaults.headers.common['Authorization'] =
+          'Bearer ' + _token;
 
         updateUser({
           name: _user.name,
@@ -98,21 +95,40 @@ const Login = () => {
             gap: theme.spacing[8],
           }}
         >
-          <Input
-            label="E-mail"
-            value={values.email}
-            register={register}
-            tag="email"
-            values={values}
-            setValues={setValues}
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="E-mail"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                placeholder="Email"
+                error={errors.email}
+              />
+            )}
+            name="email"
           />
-          <Input
-            label="Password"
-            value={values.email}
-            register={register}
-            tag="password"
-            values={values}
-            setValues={setValues}
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="Password"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                placeholder="Password"
+                error={errors.password}
+                secureTextEntry
+              />
+            )}
+            name="password"
           />
           <Box
             flexDirection="row"
@@ -147,7 +163,7 @@ const Login = () => {
           <Box mt="4">
             <Button
               label="Log in"
-              onPress={() => handleSubmit(onSubmit(values) as any)}
+              onPress={handleSubmit(onSubmit)}
               disabled={false}
               uppercase={true}
               loading={loading}
