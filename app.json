@@ -23,14 +23,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
-  },
-  "plugins": [
-    [
-      "expo-font",
-      {
-        "fonts": ["node_modules/@expo-google-fonts/nunito/Nunito_700Bold.ttf"]
-      }
-    ]
-  ]
+    },
+    "plugins": ["expo-font"]
+  }
 }

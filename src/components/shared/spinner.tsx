@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import SafeAreaWrapper from './safe-area-wrapper';
+import { Box } from '@/utils/theme';
 
-const LoadingSpinner = () => {
+export const LoadingSpinner = () => {
   return (
     <View style={styles.container}>
       <ActivityIndicator size="small" color="#fff" />
@@ -17,4 +18,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoadingSpinner;
+export const Loader = () => {
+  return (
+    <SafeAreaWrapper>
+      <Box flex={1} alignItems="center" justifyContent="center">
+        <ActivityIndicator />
+      </Box>
+    </SafeAreaWrapper>
+  );
+}

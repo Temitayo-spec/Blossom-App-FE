@@ -1,6 +1,6 @@
 import { Box, Text } from '@/utils/theme';
 import { Pressable } from 'react-native';
-import LoadingSpinner from './spinner';
+import { LoadingSpinner } from './spinner';
 
 type ButtonProps = {
   label: string;

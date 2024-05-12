@@ -1,8 +1,10 @@
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import {
   CompositeNavigationProp,
+  CompositeScreenProps,
   NavigatorScreenParams,
 } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack';
 
 export type AuthStackParamList = {
   Welcome: undefined;
@@ -19,7 +21,9 @@ export type RootBottomTabParamList = {
 
 export type HomeStackParamList = {
   Home: undefined;
-  EditTask: undefined;
+  EditTask: {
+    task: ITask;
+  };
 };
 
 export type CategoriesStackParamList = {
@@ -28,7 +32,7 @@ export type CategoriesStackParamList = {
     id: string;
   };
   CreateCategory: {
-    id?: string;
+    category?: ICategory;
   };
 };
 
@@ -54,3 +58,15 @@ export type AuthScreenNavigationType<
   NativeStackNavigationProp<AuthStackParamList, RouteName>,
   NativeStackNavigationProp<AppStackParamList, 'Root'>
 >;
+
+export type RootTabScreenProps<Screen extends keyof RootBottomTabParamList> =
+  CompositeScreenProps<
+    BottomTabScreenProps<RootBottomTabParamList, Screen>,
+    NativeStackScreenProps<RootBottomTabParamList>
+  >;
+
+export type CategoriesNavigationType =
+  NativeStackNavigationProp<CategoriesStackParamList>;
+
+export type HomeScreenNavigationType =
+  NativeStackNavigationProp<HomeStackParamList>;

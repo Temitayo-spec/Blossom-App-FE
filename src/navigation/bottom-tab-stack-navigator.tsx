@@ -17,6 +17,11 @@ const BottomTabNavigator = () => {
         tabBarActiveTintColor: 'black',
         tabBarInactiveTintColor: theme.colors.gray550,
         tabBarHideOnKeyboard: true,
+        tabBarStyle: {
+          backgroundColor: theme.colors.white,
+          paddingBottom: 34,
+          height: 82,
+        },
       }}
     >
       <Tab.Screen
